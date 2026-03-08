@@ -1,5 +1,14 @@
 #card {
     -fx-fill: white;
     -fx-stroke: black;
-    -fx-stroke-width: 2px;
+    -fx-stroke-width: 1px;
+}
+
+#cards {
+    -fx-border-color: black;
+    -fx-border-width: 1px;
+}
+
+#community_cards {
+    -fx-background-color: cornflowerblue;
 }
