@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2003.emil.a5.view;
+package edu.ntnu.idatt2003.emil.a5.view.sub;
 
 import edu.ntnu.idatt2003.emil.a5.App;
 import javafx.geometry.Pos;
