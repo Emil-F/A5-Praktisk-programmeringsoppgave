@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2003.emil.a5.model;
+package edu.ntnu.idatt2003.emil.a5.model.users;
 
 public class Player extends User {
   private int chips;
@@ -10,11 +10,18 @@ public class Player extends User {
     this.folded = false;
   }
 
+  @Override
+  public String toString() {
+    return "Class: " + getClass().getSimpleName() +
+        ", Name: " + getName() +
+        ", Chips: " + getChips();
+  }
+
   public int getChips() {
     return chips;
   }
 
-  public boolean hasFolded() {
+  public boolean isFolded() {
     return folded;
   }
 

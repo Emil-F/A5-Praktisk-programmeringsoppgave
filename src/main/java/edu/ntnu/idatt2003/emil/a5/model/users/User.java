@@ -1,11 +1,14 @@
-package edu.ntnu.idatt2003.emil.a5.model;
+package edu.ntnu.idatt2003.emil.a5.model.users;
+
+import edu.ntnu.idatt2003.emil.a5.model.Hand;
 
 public abstract class User {
   private final String name;
-  private Hand hand;
+  private final Hand hand;
 
   public User(String name) {
     this.name = name;
+    this.hand = new Hand();
   }
 
   public String getName() {
@@ -14,10 +17,6 @@ public abstract class User {
 
   public Hand getHand() {
     return hand;
-  }
-
-  public void setHand(Hand hand) {
-    this.hand = hand;
   }
 
   public void check() {}
