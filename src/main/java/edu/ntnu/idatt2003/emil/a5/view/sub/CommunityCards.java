@@ -7,10 +7,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-public class CommunityCardsView extends StackPane {
+public class CommunityCards extends StackPane {
   private PokerController pokerController;
 
-  public CommunityCardsView(PokerController pokerController) {
+  public CommunityCards(PokerController pokerController) {
     this.pokerController = pokerController;
     getStylesheets().add(getClass().getResource("/css/CommunityCards.css").toExternalForm());
     getChildren().add(getCardRow());
@@ -21,9 +21,6 @@ public class CommunityCardsView extends StackPane {
   public HBox getCardRow() {
     HBox cards = new HBox();
     cards.setId("cards");
-    for (String c : pokerController.getCommunityCards()) {
-      cards.getChildren().add(getCard(c));
-    }
     cards.setSpacing(15);
     cards.setAlignment(Pos.CENTER);
     return cards;

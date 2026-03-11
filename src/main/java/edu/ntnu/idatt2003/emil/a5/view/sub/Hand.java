@@ -7,8 +7,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
-public class HandView extends BorderPane {
-  public HandView(App app) {
+public class Hand extends BorderPane {
+  public Hand(App app) {
     HBox hand = new HBox();
     hand.setAlignment(Pos.CENTER);
     Image image = new Image(getClass().getResource("playing_cards.jpg").toExternalForm());

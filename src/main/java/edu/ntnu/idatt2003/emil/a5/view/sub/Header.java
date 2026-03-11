@@ -1,11 +1,11 @@
 package edu.ntnu.idatt2003.emil.a5.view.sub;
 
-import edu.ntnu.idatt2003.emil.a5.view.MainView;
+import edu.ntnu.idatt2003.emil.a5.view.PokerView;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 
-public class HeaderView extends StackPane {
-  public HeaderView(MainView view) {
+public class Header extends StackPane {
+  public Header(PokerView view) {
     getChildren().add(getHomeBtn());
   }
 
