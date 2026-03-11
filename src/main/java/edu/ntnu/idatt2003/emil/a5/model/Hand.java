@@ -19,20 +19,52 @@ public class Hand {
     this.cards = cards;
   }
 
-  public String checkHand() {
-    if (checkFlush()) {
+  public String checkHand(List<PlayingCard> communityCards) {
+    if (hasFlush(communityCards)) {
       return "Flush";
     }
     return "No combination found";
   }
 
-  private boolean checkFlush() {
+  private boolean hasRoyalFlush(List<PlayingCard> communityCards) {
+    return false;
+  }
+
+  private boolean hasStraightFlush(List<PlayingCard> communityCards) {
+    return false;
+  }
+
+  private boolean hasFourOfAKind(List<PlayingCard> communityCards) {
+    return false;
+  }
+
+  private boolean hasFullHouse(List<PlayingCard> communityCards) {
+    return false;
+  }
+
+  private boolean hasFlush(List<PlayingCard> communityCards) {
     for(char s: suit) {
       long count = cards.stream().filter(card -> card.getSuit() == s).count();
       if (count >= 5) {
         return true;
       }
     }
+    return false;
+  }
+
+  private boolean hasStraight(List<PlayingCard> communityCards) {
+    return false;
+  }
+
+  private boolean hasThreeOfAKind(List<PlayingCard> communityCards) {
+    return false;
+  }
+
+  private boolean hasTwoPairs(List<PlayingCard> communityCards) {
+    return false;
+  }
+
+  private boolean hasOnePair(List<PlayingCard> communityCards) {
     return false;
   }
 }
