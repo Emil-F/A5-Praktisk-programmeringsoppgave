@@ -4,9 +4,12 @@ import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 public class Hand {
+  private static final Logger logger = Logger.getLogger(Hand.class.getName());
   private List<PlayingCard> cards;
   private final char[] suit = {'S', 'H', 'D', 'C'};
 
@@ -14,11 +17,38 @@ public class Hand {
     this.cards = new ArrayList<>();
   }
 
+  @Override
+  public String toString() {
+    StringBuilder handString = new StringBuilder();
+    handString.append("Hand: [");
+    for (int i = 0; i < this.cards.size(); i++) {
+      if (i == this.cards.size() - 1) {
+        handString.append(this.cards.get(i).getAsString());
+        continue;
+      }
+      handString.append(this.cards.get(i).getAsString()).append(", ");
+    }
+    handString.append("]");
+    return handString.toString();
+  }
+
   public List<PlayingCard> getCards() {
     return cards;
   }
 
+  public void setCards(List<PlayingCard> cards) {
+    this.cards = cards;
+  }
+
+  /**
+   * <p>Calculates the hand's total card value</p>
+   *
+   * @param communityCards cards shared by all the players in the game.
+   * @return the hand's total card value as an {@link Integer}
+   */
   public int calculateCardTotal(List<PlayingCard> communityCards) {
+    Objects.requireNonNull(communityCards, "communityCards is null");
+
     AtomicInteger cardTotal = new AtomicInteger();
     cards.forEach(card -> {
       cardTotal.addAndGet(card.getFace());
@@ -29,11 +59,29 @@ public class Hand {
     return cardTotal.get();
   }
 
-  public void setCards(List<PlayingCard> cards) {
-    this.cards = cards;
-  }
-
+  /**
+   * <p>
+   * Goes through all possible combinations of a poker hand and
+   * determines if the current hand possesses cards with one of
+   * the following combinations:
+   * </p>
+   *
+   * <li>Royal Flush</li>
+   * <li>Straight Flush</li>
+   * <li>Four of a Kind</li>
+   * <li>Full House</li>
+   * <li>Straight</li>
+   * <li>Three of a Kind</li>
+   * <li>Two Pairs</li>
+   * <li>One Pair</li>
+   * <li>High Card</li>
+   *
+   * @param communityCards cards shared by all the players in the game.
+   * @return the hands total card value and its combinations as a {@link HandCheckResult}.
+   */
   public HandCheckResult checkHand(List<PlayingCard> communityCards) {
+    Objects.requireNonNull(communityCards, "communityCards is null");
+
     List<HandRank> ranks = new ArrayList<>();
     if (hasRoyalFlush(communityCards)) {
       ranks.add(HandRank.ROYAL_FLUSH);
@@ -69,23 +117,24 @@ public class Hand {
     return new HandCheckResult(calculateCardTotal(communityCards), ranks);
   }
 
-  private boolean hasRoyalFlush(List<PlayingCard> communityCards) {
+  protected boolean hasRoyalFlush(List<PlayingCard> communityCards) {
+
     return false;
   }
 
-  private boolean hasStraightFlush(List<PlayingCard> communityCards) {
+  protected boolean hasStraightFlush(List<PlayingCard> communityCards) {
     return false;
   }
 
-  private boolean hasFourOfAKind(List<PlayingCard> communityCards) {
+  protected boolean hasFourOfAKind(List<PlayingCard> communityCards) {
     return false;
   }
 
-  private boolean hasFullHouse(List<PlayingCard> communityCards) {
+  protected boolean hasFullHouse(List<PlayingCard> communityCards) {
     return false;
   }
 
-  private boolean hasFlush(List<PlayingCard> communityCards) {
+  protected boolean hasFlush(List<PlayingCard> communityCards) {
     for(char s: suit) {
       long count = cards.stream().filter(card -> card.getSuit() == s).count();
       if (count >= 5) {
@@ -95,19 +144,19 @@ public class Hand {
     return false;
   }
 
-  private boolean hasStraight(List<PlayingCard> communityCards) {
+  protected boolean hasStraight(List<PlayingCard> communityCards) {
     return false;
   }
 
-  private boolean hasThreeOfAKind(List<PlayingCard> communityCards) {
+  protected boolean hasThreeOfAKind(List<PlayingCard> communityCards) {
     return false;
   }
 
-  private boolean hasTwoPairs(List<PlayingCard> communityCards) {
+  protected boolean hasTwoPairs(List<PlayingCard> communityCards) {
     return false;
   }
 
-  private boolean hasOnePair(List<PlayingCard> communityCards) {
+  protected boolean hasOnePair(List<PlayingCard> communityCards) {
     return false;
   }
 }
