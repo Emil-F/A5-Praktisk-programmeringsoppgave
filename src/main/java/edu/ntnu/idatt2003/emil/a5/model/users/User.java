@@ -7,6 +7,9 @@ public abstract class User {
   private final Hand hand;
 
   public User(String name) {
+    if (name == null) {
+      throw new NullPointerException("name is null");
+    }
     this.name = name;
     this.hand = new Hand();
   }
@@ -18,14 +21,4 @@ public abstract class User {
   public Hand getHand() {
     return hand;
   }
-
-  public void check() {}
-
-  public void call() {}
-
-  public void raise() {}
-
-  public void bet() {}
-
-  public void allIn() {}
 }
