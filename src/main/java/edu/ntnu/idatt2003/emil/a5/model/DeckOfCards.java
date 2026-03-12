@@ -12,7 +12,7 @@ public class DeckOfCards {
   public DeckOfCards() {
     this.rand = new Random();
     this.cards = new ArrayList<>();
-    stockCards();
+    restockCards();
   }
 
   public char[] getSuit() {
@@ -23,12 +23,15 @@ public class DeckOfCards {
     return this.cards;
   }
 
-  public void stockCards() {
+  public void restockCards() {
+    cards.clear();
+    int deckSize = 52;
+    int maxFaceSize = 13;
+
     int face = 1;
     int index = 0;
-
-    for(int n = 0; n < 52; n++) {
-      if (face > 13) {
+    for(int n = 0; n < deckSize; n++) {
+      if (face > maxFaceSize) {
         face = 1;
         index++;
       }
@@ -38,6 +41,9 @@ public class DeckOfCards {
   }
 
   public List<PlayingCard> dealHand(int n) {
+    if (n <= 0) {
+      throw new IllegalArgumentException("n is less than 1");
+    }
     List<PlayingCard> deck = getCards();
     List<PlayingCard> hand = new ArrayList<>();
     for(int i = 0; i < n; i++) {
