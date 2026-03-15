@@ -1,7 +1,8 @@
-package edu.ntnu.idatt2003.emil.a5.view.sub;
+package edu.ntnu.idatt2003.emil.a5.view.player;
 
 import edu.ntnu.idatt2003.emil.a5.controller.PokerController;
 import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
+import edu.ntnu.idatt2003.emil.a5.view.Card;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
@@ -30,7 +31,7 @@ public class PlayerHand extends StackPane {
     // Initial render
     refreshCards();
     // Automatic updates
-    controller.getPlayer().getHand().getObsCards().addListener(
+    controller.getObsPlayerCards().addListener(
         (ListChangeListener<PlayingCard>) change -> refreshCards()
     );
   }
@@ -38,7 +39,7 @@ public class PlayerHand extends StackPane {
   public void refreshCards() {
     cards.getChildren().clear();
 
-    for (PlayingCard card : controller.getPlayer().getHand().getObsCards()) {
+    for (PlayingCard card : controller.getObsPlayerCards()) {
       cards.getChildren().add(new Card(card));
     }
   }

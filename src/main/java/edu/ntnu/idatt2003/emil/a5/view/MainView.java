@@ -1,8 +1,8 @@
 package edu.ntnu.idatt2003.emil.a5.view;
 
 import edu.ntnu.idatt2003.emil.a5.controller.PokerController;
-import edu.ntnu.idatt2003.emil.a5.view.sub.CommunityCards;
-import edu.ntnu.idatt2003.emil.a5.view.sub.PlayerHand;
+import edu.ntnu.idatt2003.emil.a5.view.casino.CasinoView;
+import edu.ntnu.idatt2003.emil.a5.view.player.PlayerView;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;

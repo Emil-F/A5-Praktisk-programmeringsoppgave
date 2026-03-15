@@ -1,7 +1,6 @@
-package edu.ntnu.idatt2003.emil.a5.view;
+package edu.ntnu.idatt2003.emil.a5.view.player;
 
 import edu.ntnu.idatt2003.emil.a5.controller.PokerController;
-import edu.ntnu.idatt2003.emil.a5.view.sub.PlayerHand;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
@@ -17,6 +16,7 @@ public class PlayerView extends StackPane {
     this.playerHand = new PlayerHand(controller);
     getStylesheets().add(getClass().getResource("/css/PlayerView.css").toExternalForm());
     getChildren().add(createBody());
+
   }
 
   private VBox createBody() {
@@ -47,7 +47,11 @@ public class PlayerView extends StackPane {
   private Button createStartButton() {
     Button startButton = new Button("Start Game");
     startButton.setOnAction(e -> {
-      controller.handleStartGame();
+      try {
+        controller.handleStartGame();
+      } catch (InterruptedException ex) {
+        throw new RuntimeException(ex);
+      }
     });
     return startButton;
   }

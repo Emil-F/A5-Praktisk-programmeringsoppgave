@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2003.emil.a5.view.sub;
+package edu.ntnu.idatt2003.emil.a5.view;
 
 import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
 import javafx.scene.image.Image;

@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2003.emil.a5.view.sub;
+package edu.ntnu.idatt2003.emil.a5.view.casino;
 
 import edu.ntnu.idatt2003.emil.a5.controller.PokerController;
 import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
@@ -33,7 +33,7 @@ public class CommunityCards extends StackPane {
     refreshCards();
 
     // Automatic updates
-    controller.getCommunityCards().addListener(
+    controller.getObsCommunityCards().addListener(
         (ListChangeListener<PlayingCard>) change -> refreshCards()
     );
   }
@@ -41,7 +41,7 @@ public class CommunityCards extends StackPane {
   public void refreshCards() {
     cards.getChildren().clear();
 
-    for (PlayingCard card : controller.getCommunityCards()) {
+    for (PlayingCard card : controller.getObsCommunityCards()) {
       cards.getChildren().add(new Card(card));
     }
   }
