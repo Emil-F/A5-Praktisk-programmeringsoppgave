@@ -10,6 +10,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * This class represent a player's hand in the game of Poker.
+ */
 public class Hand {
   private static final Logger logger = Logger.getLogger(Hand.class.getName());
   private List<PlayingCard> cards;
@@ -90,49 +93,43 @@ public class Hand {
     combinedCards.addAll(this.cards);
     combinedCards.addAll(communityCards);
 
-    List<HandRank> ranks = new ArrayList<>();
     if (hasRoyalFlush(combinedCards)) {
-      ranks.add(HandRank.ROYAL_FLUSH);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.ROYAL_FLUSH);
     }
     if (hasStraightFlush(combinedCards)) {
-      ranks.add(HandRank.STRAIGHT_FLUSH);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.STRAIGHT_FLUSH);
     }
     if (hasFourOfAKind(combinedCards)) {
-      ranks.add(HandRank.FOUR_OF_A_KIND);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.FOUR_OF_A_KIND);
     }
     if (hasFullHouse(combinedCards)) {
-      ranks.add(HandRank.FULL_HOUSE);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.FULL_HOUSE);
     }
     if (hasFlush(combinedCards)) {
-      ranks.add(HandRank.FLUSH);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.FLUSH);
     }
     if (hasStraight(combinedCards)) {
-      ranks.add(HandRank.STRAIGHT);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.STRAIGHT);
     }
     if (hasThreeOfAKind(combinedCards)) {
-      ranks.add(HandRank.THREE_OF_A_KIND);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.THREE_OF_A_KIND);
     }
     if (hasTwoPairs(combinedCards)) {
-      ranks.add(HandRank.TWO_PAIRS);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.TWO_PAIRS);
     }
     if (hasOnePair(combinedCards)) {
-      ranks.add(HandRank.ONE_PAIR);
+      return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.ONE_PAIR);
     }
-    if (ranks.isEmpty()) {
-      ranks.add(HandRank.HIGH_CARD);
-    }
-
-    return new HandCheckResult(calculateCardTotal(combinedCards), ranks);
+    return new HandCheckResult(calculateCardTotal(combinedCards), HandRank.HIGH_CARD);
   }
 
   /**
    * <p>Checks if the hand has the rank Royal Flush.</p>
-   * <p>
-   *   A Royal Flush consists of cards with faces [1, 10, 11, 12, 13], all with the same suit.
-   * </p>
+   * <p>A Royal Flush consists of cards with faces [1, 10, 11, 12, 13],
+   * all with the same suit (Flush).</p>
    *
    * @param combinedCards hand + communityCards
-   * @return true if the hand has a Royal Flush, else false.
+   * @return true if the hand has a Royal Flush, otherwise false.
    */
   protected boolean hasRoyalFlush(List<PlayingCard> combinedCards) {
     for (char suit : this.suit) {
@@ -149,69 +146,202 @@ public class Hand {
     return false;
   }
 
+  /**
+   * <p>Checks if the hand has the rank Straight Flush</p>
+   *
+   * <p>A Straight Flush consists of five cards with a sequential rank
+   * e.g. [1, 2, 3, 4, 5] or [5, 6, 7, 8, 9] (Straight),
+   * all with the same suit (Flush).</p>
+   *
+   * @param combinedCards hand + communityCards
+   * @return true if the hand has a Straight Flush, otherwise false.
+   */
   protected boolean hasStraightFlush(List<PlayingCard> combinedCards) {
-    for (char suit : this.suit) {
-      Set<Integer> faces = combinedCards.stream()
-          .filter(card -> card.getSuit() == suit)
-          .map(PlayingCard::getFace)
-          .collect(Collectors.toSet());
-
-      if (faces.containsAll(List.of(7, 8, 9, 10, 11))) {
-        return true;
-      }
-    }
-
-    return false;
+    return hasFlush(getStraight(combinedCards));
   }
 
+  /**
+   * <p>Checks if the hand has the rank Four of a Kind</p>
+   *
+   * <p>Four of a Kind consists of four cards of the same face.</p>
+   *
+   * @param combinedCards hand + communityCards
+   * @return true if the hand has Four of a Kind, otherwise false.
+   */
   protected boolean hasFourOfAKind(List<PlayingCard> combinedCards) {
-    int maxDistinctFaces = 3;
-    long distinctFacesCount = combinedCards.stream()
-        .map(PlayingCard::getFace)
-        .distinct()
-        .count();
-
-    return distinctFacesCount <= maxDistinctFaces;
-  }
-
-  protected boolean hasFullHouse(List<PlayingCard> combinedCards) {
+    List<PlayingCard> fourOfAKind = new ArrayList<>();
+    for(PlayingCard card : combinedCards) {
+      if (combinedCards.stream().filter(c -> c.getFace() == card.getFace()).count() == 4) {
+        return true;
+      };
+    }
     return false;
   }
 
-  protected boolean hasFlush(List<PlayingCard> combinedCards) {
-    for (char suit : this.suit) {
-      Set<Integer> faces = combinedCards.stream()
-          .filter(card -> card.getSuit() == suit)
-          .map(PlayingCard::getFace)
-          .collect(Collectors.toSet());
+  /**
+   * <p>Checks if the hand has the rank Full House</p>
+   *
+   * <p>A Full House consists of three cards of the same face (Three of a Kind) and one pair.</p>
+   *
+   * @param combinedCards hand + communityCards
+   * @return true if the hand has a Full House, otherwise false.
+   */
+  protected boolean hasFullHouse(List<PlayingCard> combinedCards) {
+    List<PlayingCard> threeOfAKind = getThreeOfAKind(combinedCards).stream().distinct().toList();
+    if (threeOfAKind.isEmpty()) {
+      return false;
+    }
 
-      if (faces.size() == 5) {
+    List<PlayingCard> fullHouse = combinedCards.stream().filter(
+      c -> c.getFace() != threeOfAKind.getFirst().getFace()
+    ).toList();
+    return hasOnePair(fullHouse);
+  }
+
+  /**
+   * <p>Checks if the hand has the rank Flush</p>
+   *
+   * <p>A Flush consists of five cards, all with the same suit.</p>
+   *
+   * @param combinedCards hand + communityCards
+   * @return true if the hand has a Flush, otherwise false.
+   */
+  protected boolean hasFlush(List<PlayingCard> combinedCards) {
+    List<Character> combinedSuits = combinedCards.stream()
+      .map(PlayingCard::getSuit)
+      .toList();
+
+    for (char suit : this.suit) {
+      if (combinedSuits.stream().filter(s -> s.equals(suit)).count() >= 5) {
         return true;
-      }
+      };
     }
 
     return false;
   }
 
+  /**
+   * <p>Checks if the hand has the rank Straight</p>
+   *
+   * <p>A Straight consists of five cards with its faces in sequential order
+   * e.g. [1, 2, 3, 4, 5] or [5, 6, 7, 8, 9].</p>
+   *
+   * @param combinedCards hand + communityCards
+   * @return true if the hand has a Straight, otherwise false.
+   */
   protected boolean hasStraight(List<PlayingCard> combinedCards) {
-    return false;
+    return getStraight(combinedCards).size() >= 5;
   }
 
+  /**
+   * <p>Checks if the hand has the rank Three of a Kind</p>
+   *
+   * <p>Three of a Kind consists of three cards, all with the same face.</p>
+   *
+   * @param combinedCards hand + communityCards
+   * @return true if the hand has a Three of a Kind, otherwise false.
+   */
   protected boolean hasThreeOfAKind(List<PlayingCard> combinedCards) {
-    int maxDistinctFaces = 4;
-    long distinctFacesCount = combinedCards.stream()
+    List<PlayingCard> threeOfAKind = getThreeOfAKind(combinedCards);
+    return getThreeOfAKind(combinedCards).size() == 3;
+  }
+
+  /**
+   * <p>Checks if the hand has the rank Two Pairs</p>
+   *
+   * <p>Two Pairs consists of four cards with pairs of two, with the same face.
+   * e.g. [3, 3, 10, 10]</p>
+   *
+   * @param combinedCards hand + communityCards
+   * @return true if the hand has Two Pairs, otherwise false.
+   */
+  protected boolean hasTwoPairs(List<PlayingCard> combinedCards) {
+    List<PlayingCard> pairs = getPairs(combinedCards);
+
+    return pairs.size() > 2;
+  }
+
+  /**
+   * <p>Checks if the hand has the rank One Pair</p>
+   *
+   * <p>One Pair consists of two cards with the same face e.g. [3, 3].</p>
+   *
+   * @param combinedCards hand + communityCards
+   * @return true if the hand has Two Pairs, otherwise false.
+   */
+  protected boolean hasOnePair(List<PlayingCard> combinedCards) {
+    List<PlayingCard> pairs = getPairs(combinedCards);
+
+    if (pairs.size() > 2) {
+      logger.log(Level.WARNING, "hasOnePair() was called even though there are more than one pair present");
+    }
+
+    return pairs.size() == 2;
+  }
+
+  private List<PlayingCard> getStraight(List<PlayingCard> combinedCards) {
+    List<Integer> faces = combinedCards.stream()
         .map(PlayingCard::getFace)
         .distinct()
-        .count();
+        .sorted()
+        .toList();
 
-    return distinctFacesCount <= maxDistinctFaces;
+    List<Integer> sequentialIdx = new ArrayList<>();
+    int lastFaceIdx = 0;
+    int lastFace = faces.getFirst();
+    for (int i = 1; i < faces.size(); i++) {
+      if (faces.get(i) - lastFace == 1) {
+        if (sequentialIdx.isEmpty()) {
+          sequentialIdx.add(lastFaceIdx);
+        }
+        sequentialIdx.add(i);
+
+        if (sequentialIdx.size() == 5) {
+          break;
+        }
+      } else {
+        sequentialIdx.clear();
+      }
+      lastFace = faces.get(i);
+      lastFaceIdx = i;
+    }
+
+    return sequentialIdx.stream()
+        .map(combinedCards::get).toList();
   }
 
-  protected boolean hasTwoPairs(List<PlayingCard> combinedCards) {
-    return false;
+  private List<PlayingCard> getThreeOfAKind(List<PlayingCard> combinedCards) {
+    List<PlayingCard> threeOfAKind = new ArrayList<>();
+    for(PlayingCard card : combinedCards) {
+      List<PlayingCard> filtered = combinedCards.stream().filter(c -> c.getFace() == card.getFace()).toList();
+      if (filtered.size() == 3) {
+        threeOfAKind = filtered;
+      }
+    }
+    return threeOfAKind;
   }
 
-  protected boolean hasOnePair(List<PlayingCard> combinedCards) {
-    return false;
+  private List<PlayingCard> getPairs(List<PlayingCard> combinedCards) {
+    List<Integer> faces = combinedCards.stream()
+        .map(PlayingCard::getFace)
+        .sorted()
+        .toList();
+
+    List<Integer> pairs = new ArrayList<>();
+    int lastFaceIdx = 0;
+    int lastFace = faces.getFirst();
+    for (int i = 1; i < faces.size(); i++) {
+      if (faces.get(i) == lastFace) {
+        if (pairs.isEmpty()) {
+          pairs.add(lastFaceIdx);
+        }
+        pairs.add(i);
+      }
+
+      lastFace = faces.get(i);
+      lastFaceIdx = i;
+    }
+
+    return pairs.stream().map(combinedCards::get).toList();
   }
 }
