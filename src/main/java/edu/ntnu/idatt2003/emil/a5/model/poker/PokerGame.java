@@ -2,6 +2,7 @@ package edu.ntnu.idatt2003.emil.a5.model.poker;
 
 import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
 import edu.ntnu.idatt2003.emil.a5.model.poker.round.PokerRound;
+import edu.ntnu.idatt2003.emil.a5.model.poker.round.Round;
 import edu.ntnu.idatt2003.emil.a5.model.users.Bot;
 import edu.ntnu.idatt2003.emil.a5.model.users.Player;
 import edu.ntnu.idatt2003.emil.a5.model.users.User;
@@ -30,7 +31,7 @@ public class PokerGame {
     this.bots = new ArrayList<>();
     this.participants = new ArrayList<>();
 
-    this.currentRound = new PokerRound();
+    this.currentRound = new PokerRound(participants);
 
     populateBots(3);
   }
@@ -74,11 +75,20 @@ public class PokerGame {
     }
   }
 
-  public void startGame() {
+  public void startGame() throws InterruptedException {
     participants.clear();
     participants.add(this.player);
     participants.addAll(this.bots);
 
+    currentRound.dealPreFlop();
+    logGameInfo();
+    currentRound.dealFlop();
+    logGameInfo();
+    currentRound.dealTurn();
+    logGameInfo();
+    currentRound.dealRiver();
+    logGameInfo();
+    currentRound.resolveShowdown();
     logGameInfo();
   }
 

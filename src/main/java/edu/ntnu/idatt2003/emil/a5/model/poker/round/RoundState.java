@@ -13,6 +13,7 @@ public class RoundState {
       case FLOP -> state = Round.TURN;
       case TURN -> state = Round.RIVER;
       case RIVER -> state = Round.SHOWDOWN;
+      case SHOWDOWN -> state = Round.PRE_FLOP;
     }
   }
 

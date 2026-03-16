@@ -25,7 +25,21 @@ public abstract class User {
     return "Class: " + getClass().getSimpleName() +
       ", Name: " + getName() +
       ", Chips: " + getChips() +
-      ", " + getCards().toString();
+      ", " + getCardsAsString();
+  }
+
+  public String getCardsAsString() {
+    StringBuilder cardsString = new StringBuilder();
+    cardsString.append("Cards: [");
+    for (int i = 0; i < this.cards.size(); i++) {
+      if (i == this.cards.size() - 1) {
+        cardsString.append(this.cards.get(i).getAsString());
+        continue;
+      }
+      cardsString.append(this.cards.get(i).getAsString()).append(", ");
+    }
+    cardsString.append("]");
+    return cardsString.toString();
   }
 
   public String getName() {
@@ -38,6 +52,10 @@ public abstract class User {
 
   public void setCards(List<PlayingCard> holeCards) {
     cards = holeCards;
+  }
+
+  public void clearCards() {
+    cards.clear();
   }
 
   public int getChips() {
