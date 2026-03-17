@@ -1,10 +1,11 @@
 package edu.ntnu.idatt2003.emil.a5.model.poker.hand;
 
-import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
+import edu.ntnu.idatt2003.emil.a5.model.poker.PlayingCard;
+import edu.ntnu.idatt2003.emil.a5.model.users.Participant;
+import edu.ntnu.idatt2003.emil.a5.model.users.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class HandCheckerTest {
 
   private HandChecker handChecker;
-  private List<PlayingCard> playerCards;
+  private Participant player;
   private List<PlayingCard> highCardHand;
 
   private PlayingCard card(char suit, int face) {
@@ -21,7 +22,7 @@ class HandCheckerTest {
 
   @BeforeEach
   void setUp() {
-    playerCards = new ArrayList<>();
+    player = new Player("Emil", 50000);
     handChecker = new HandChecker();
     highCardHand = List.of(
       card('S', 2),
@@ -40,7 +41,7 @@ class HandCheckerTest {
 
   @Test
   void checkHand_returnsRoyalFlushIfHandHasRoyalFlush() {
-    playerCards = List.of(card('S', 1), card('S', 10));
+    player.setCards(List.of(card('S', 1), card('S', 10)));
     List<PlayingCard> royalFlush = List.of(
       card('S', 11),
       card('S', 12),
@@ -50,14 +51,14 @@ class HandCheckerTest {
     );
     int cardTotal = 52;
 
-    HandCheckResult result = new HandCheckResult(cardTotal, HandRank.ROYAL_FLUSH);
+    HandCheckResult result = new HandCheckResult(player, cardTotal, HandRank.ROYAL_FLUSH);
 
-    assertEquals(result, handChecker.checkHand(playerCards, royalFlush));
+    assertEquals(result, handChecker.checkHand(player, royalFlush));
   }
 
   @Test
   void checkHand_returnsStraightFlushIfHandHasStraightFlush() {
-    playerCards = List.of(card('S', 1), card('S', 3));
+    player.setCards(List.of(card('S', 1), card('S', 3)));
     List<PlayingCard> straightFlush = List.of(
       card('S', 4),
       card('S', 5),
@@ -67,14 +68,14 @@ class HandCheckerTest {
     );
     int cardTotal = 29;
 
-    HandCheckResult result = new HandCheckResult(cardTotal, HandRank.STRAIGHT_FLUSH);
+    HandCheckResult result = new HandCheckResult(player, cardTotal, HandRank.STRAIGHT_FLUSH);
 
-    assertEquals(result, handChecker.checkHand(playerCards, straightFlush));
+    assertEquals(result, handChecker.checkHand(player, straightFlush));
   }
 
   @Test
   void checkHand_returnsFourOfAKindIfHandHasFourOfAKind() {
-    playerCards = List.of(card('S', 1), card('S', 3));
+    player.setCards(List.of(card('S', 1), card('S', 3)));
     List<PlayingCard> fourOfAKind = List.of(
       card('H', 3),
       card('D', 3),
@@ -84,14 +85,14 @@ class HandCheckerTest {
     );
     int cardTotal = 26;
 
-    HandCheckResult result = new HandCheckResult(cardTotal, HandRank.FOUR_OF_A_KIND);
+    HandCheckResult result = new HandCheckResult(player, cardTotal, HandRank.FOUR_OF_A_KIND);
 
-    assertEquals(result, handChecker.checkHand(playerCards, fourOfAKind));
+    assertEquals(result, handChecker.checkHand(player, fourOfAKind));
   }
 
   @Test
   void checkHand_returnsFullHouseIfHandHasFullHouse() {
-    playerCards = List.of(card('S', 1), card('S', 3));
+    player.setCards(List.of(card('S', 1), card('S', 3)));
     List<PlayingCard> fullHouse = List.of(
       card('H', 3),
       card('D', 3),
@@ -101,14 +102,14 @@ class HandCheckerTest {
     );
     int cardTotal = 20;
 
-    HandCheckResult result = new HandCheckResult(cardTotal, HandRank.FULL_HOUSE);
+    HandCheckResult result = new HandCheckResult(player, cardTotal, HandRank.FULL_HOUSE);
 
-    assertEquals(result, handChecker.checkHand(playerCards, fullHouse));
+    assertEquals(result, handChecker.checkHand(player, fullHouse));
   }
 
   @Test
   void checkHand_returnsFlushIfHandHasFlush() {
-    playerCards = List.of(card('S', 1), card('H', 4));
+    player.setCards(List.of(card('S', 1), card('H', 4)));
     List<PlayingCard> flush = List.of(
       card('H', 6),
       card('H', 10),
@@ -118,14 +119,14 @@ class HandCheckerTest {
     );
     int cardTotal = 44;
 
-    HandCheckResult result = new HandCheckResult(cardTotal, HandRank.FLUSH);
+    HandCheckResult result = new HandCheckResult(player, cardTotal, HandRank.FLUSH);
 
-    assertEquals(result, handChecker.checkHand(playerCards, flush));
+    assertEquals(result, handChecker.checkHand(player, flush));
   }
 
   @Test
   void checkHand_returnsStraightIfHandHasStraight() {
-    playerCards = List.of(card('S', 1), card('D', 3));
+    player.setCards(List.of(card('S', 1), card('D', 3)));
     List<PlayingCard> straight = List.of(
       card('H', 4),
       card('C', 5),
@@ -135,14 +136,14 @@ class HandCheckerTest {
     );
     int cardTotal = 28;
 
-    HandCheckResult result = new HandCheckResult(cardTotal, HandRank.STRAIGHT);
+    HandCheckResult result = new HandCheckResult(player, cardTotal, HandRank.STRAIGHT);
 
-    assertEquals(result, handChecker.checkHand(playerCards, straight));
+    assertEquals(result, handChecker.checkHand(player, straight));
   }
 
   @Test
   void checkHand_returnsThreeOfAKindIfHandHasThreeOfAKind() {
-    playerCards = List.of(card('S', 1), card('D', 3));
+    player.setCards(List.of(card('S', 1), card('D', 3)));
     List<PlayingCard> threeOfAKind = List.of(
       card('H', 3),
       card('C', 5),
@@ -152,14 +153,14 @@ class HandCheckerTest {
     );
     int cardTotal = 23;
 
-    HandCheckResult result = new HandCheckResult(cardTotal, HandRank.THREE_OF_A_KIND);
+    HandCheckResult result = new HandCheckResult(player, cardTotal, HandRank.THREE_OF_A_KIND);
 
-    assertEquals(result, handChecker.checkHand(playerCards, threeOfAKind));
+    assertEquals(result, handChecker.checkHand(player, threeOfAKind));
   }
 
   @Test
   void checkHand_returnsTwoPairsIfHandHasTwoPairs() {
-    playerCards = List.of(card('S', 1), card('D', 3));
+    player.setCards(List.of(card('S', 1), card('D', 3)));
     List<PlayingCard> twoPairs = List.of(
       card('H', 3),
       card('C', 5),
@@ -169,14 +170,14 @@ class HandCheckerTest {
     );
     int cardTotal = 25;
 
-    HandCheckResult result = new HandCheckResult(cardTotal, HandRank.TWO_PAIRS);
+    HandCheckResult result = new HandCheckResult(player, cardTotal, HandRank.TWO_PAIR);
 
-    assertEquals(result, handChecker.checkHand(playerCards, twoPairs));
+    assertEquals(result, handChecker.checkHand(player, twoPairs));
   }
 
   @Test
   void checkHand_returnsOnePairIfHandHasOnePair() {
-    playerCards = List.of(card('S', 1), card('D', 3));
+    player.setCards(List.of(card('S', 1), card('D', 3)));
     List<PlayingCard> onePair = List.of(
       card('H', 3),
       card('C', 5),
@@ -186,14 +187,14 @@ class HandCheckerTest {
     );
     int cardTotal = 27;
 
-    HandCheckResult result = new HandCheckResult(cardTotal, HandRank.ONE_PAIR);
+    HandCheckResult result = new HandCheckResult(player, cardTotal, HandRank.ONE_PAIR);
 
-    assertEquals(result, handChecker.checkHand(playerCards, onePair));
+    assertEquals(result, handChecker.checkHand(player, onePair));
   }
 
   @Test
   void checkHand_returnsHighCardIfHandHasHighCard() {
-    playerCards = List.of(card('S', 2), card('H', 5));
+    player.setCards(List.of(card('S', 2), card('H', 5)));
     List<PlayingCard> highCard = List.of(
       card('D', 7),
       card('C', 9),
@@ -203,9 +204,9 @@ class HandCheckerTest {
     );
     int cardTotal = 50;
 
-    HandCheckResult result = new HandCheckResult(cardTotal, HandRank.HIGH_CARD);
+    HandCheckResult result = new HandCheckResult(player, cardTotal, HandRank.HIGH_CARD);
 
-    assertEquals(result, handChecker.checkHand(playerCards, highCard));
+    assertEquals(result, handChecker.checkHand(player, highCard));
   }
 
   @Test
@@ -488,7 +489,9 @@ class HandCheckerTest {
       card('S', 12)
     );
 
-    assertTrue(handChecker.hasTwoPairs(twoPairs));
+    assertAll(
+      () -> assertTrue(handChecker.hasTwoPair(twoPairs))
+    );
   }
 
   @Test
@@ -503,12 +506,12 @@ class HandCheckerTest {
       card('S', 12)
     );
 
-    assertFalse(handChecker.hasTwoPairs(onePair));
+    assertFalse(handChecker.hasTwoPair(onePair));
   }
 
   @Test
   void hasTwoPairs_returnsFalseIfHandDoesNotHaveTwoPairs() {
-    assertFalse(handChecker.hasTwoPairs(highCardHand));
+    assertFalse(handChecker.hasTwoPair(highCardHand));
   }
 
   @Test
