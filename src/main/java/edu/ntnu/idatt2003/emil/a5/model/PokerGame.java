@@ -1,11 +1,9 @@
 package edu.ntnu.idatt2003.emil.a5.model.poker;
 
-import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
 import edu.ntnu.idatt2003.emil.a5.model.poker.round.PokerRound;
-import edu.ntnu.idatt2003.emil.a5.model.poker.round.Round;
 import edu.ntnu.idatt2003.emil.a5.model.users.Bot;
 import edu.ntnu.idatt2003.emil.a5.model.users.Player;
-import edu.ntnu.idatt2003.emil.a5.model.users.User;
+import edu.ntnu.idatt2003.emil.a5.model.users.Participant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +17,10 @@ public class PokerGame {
 
   private final Player player;
   private final List<Bot> bots;
-  private final List<User> participants;
-
+  private final List<Participant> participants;
   private final PokerRound currentRound;
+
+  private boolean activeBettingRound;
 
   /**
    * Constructs a new instance of the game of Poker.
@@ -30,28 +29,11 @@ public class PokerGame {
     this.player = new Player("Emil", 50000);
     this.bots = new ArrayList<>();
     this.participants = new ArrayList<>();
+    this.currentRound = new PokerRound(player, bots, participants);
 
-    this.currentRound = new PokerRound(participants);
+    this.activeBettingRound = false;
 
     populateBots(3);
-  }
-
-  public List<PlayingCard> getCommunityCards() {
-    return currentRound.getCommunityCards();
-  }
-
-  public String getCommunityCardsString() {
-    StringBuilder communityCardsString = new StringBuilder();
-    communityCardsString.append("Community Cards: [");
-    for (int i = 0; i < getCommunityCards().size(); i++) {
-      if (i == getCommunityCards().size() - 1) {
-        communityCardsString.append(getCommunityCards().get(i).getAsString());
-        continue;
-      }
-      communityCardsString.append(getCommunityCards().get(i).getAsString()).append(", ");
-    }
-    communityCardsString.append("]");
-    return communityCardsString.toString();
   }
 
   public Player getPlayer() {
@@ -60,6 +42,10 @@ public class PokerGame {
 
   public List<Bot> getBots() {
     return bots;
+  }
+
+  public List<Participant> getParticipants() {
+    return participants;
   }
 
   public PokerRound getCurrentRound() {
@@ -80,16 +66,17 @@ public class PokerGame {
     participants.add(this.player);
     participants.addAll(this.bots);
 
-    currentRound.dealPreFlop();
+    // Start a new PokerRound
+
+    switch (currentRound.getRoundState().getCurrentState()) {
+      case PRE_FLOP -> currentRound.dealPreFlop();
+      case FLOP     -> currentRound.dealFlop();
+      case TURN     -> currentRound.dealTurn();
+      case RIVER    -> currentRound.dealRiver();
+      case SHOWDOWN -> currentRound.resolveShowdown();
+    }
     logGameInfo();
-    currentRound.dealFlop();
-    logGameInfo();
-    currentRound.dealTurn();
-    logGameInfo();
-    currentRound.dealRiver();
-    logGameInfo();
-    currentRound.resolveShowdown();
-    logGameInfo();
+    currentRound.getRoundState().advanceRound();
   }
 
   public void stopGame() {
@@ -97,14 +84,14 @@ public class PokerGame {
 
   public void logGameInfo() {
     StringBuilder participantInfo = new StringBuilder();
-    for (User participant : participants) {
+    for (Participant participant : participants) {
       participantInfo.append(participant.toString()).append("\n");
     }
 
     String gameInfo = "--- Game Info --- \n"
       + "Current Round: " + currentRound.getRoundState().getCurrentState().toString() + "\n"
       + "Current Pot: " + currentRound.getPot().toString() + "\n"
-      + getCommunityCardsString() + "\n"
+      + currentRound.getCommunityCardsString() + "\n"
       + participantInfo;
 
     logger.info(gameInfo);
