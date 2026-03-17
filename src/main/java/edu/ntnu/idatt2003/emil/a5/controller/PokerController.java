@@ -1,8 +1,7 @@
 package edu.ntnu.idatt2003.emil.a5.controller;
 
-import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
-import edu.ntnu.idatt2003.emil.a5.model.poker.PokerGame;
-import edu.ntnu.idatt2003.emil.a5.model.poker.round.PokerRound;
+import edu.ntnu.idatt2003.emil.a5.model.poker.PlayingCard;
+import edu.ntnu.idatt2003.emil.a5.model.PokerService;
 import edu.ntnu.idatt2003.emil.a5.model.users.Bot;
 import edu.ntnu.idatt2003.emil.a5.model.users.Player;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,19 +16,25 @@ public class PokerController {
   private static final Logger logger = Logger.getLogger(PokerController.class.getName());
 
   private final MainController controller;
-  private final PokerGame game;
+  private final PokerService service;
 
   private final ObservableList<PlayingCard> obsCommunityCards = FXCollections.observableArrayList();
   private final ObservableList<PlayingCard> obsPlayerCards = FXCollections.observableArrayList();
 
   private final StringProperty currentRound = new SimpleStringProperty();
   private final StringProperty potValue = new SimpleStringProperty();
+  private final StringProperty currentRank = new SimpleStringProperty();
+  private final StringProperty currentCardValue = new SimpleStringProperty();
+  private final StringProperty currentWinner = new SimpleStringProperty();
+  private final StringProperty currentWinningHand = new SimpleStringProperty();
+  private final StringProperty cardsOfHearts = new SimpleStringProperty();
+  private final StringProperty queenOfSpades = new SimpleStringProperty();
 
-  public PokerController(MainController mainController, PokerGame pokerGame) {
+  public PokerController(MainController mainController, PokerService service) {
     this.controller = mainController;
-    this.game = pokerGame;
-    obsCommunityCards.setAll(game.getCommunityCards());
-    obsPlayerCards.setAll(game.getPlayer().getCards());
+    this.service = service;
+    obsCommunityCards.setAll(service.getCommunityCards());
+    obsPlayerCards.setAll(service.getPlayer().getCards());
   }
 
   public ObservableList<PlayingCard> getObsCommunityCards() {
@@ -48,22 +53,53 @@ public class PokerController {
     return potValue;
   }
 
-  public PokerRound getCurrentRoundRound() {
-    return game.getCurrentRound();
+  public StringProperty getCurrentRank() {
+    return currentRank;
+  }
+
+  public StringProperty getCurrentCardValue() {
+    return currentCardValue;
+  }
+
+  public StringProperty getCurrentWinner() {
+    return currentWinner;
+  }
+
+  public StringProperty getCurrentWinningHand() {
+    return currentWinningHand;
+  }
+
+  public StringProperty getQueenOfSpades() {
+    return queenOfSpades;
   }
 
   public Player getPlayer() {
-    return game.getPlayer();
+    return service.getPlayer();
   }
 
   public List<Bot> getBots() {
-    return game.getBots();
+    return service.getBots();
+  }
+
+  public StringProperty getCardsOfHearts() {
+    return cardsOfHearts;
   }
 
   public void refreshUI() {
-    obsCommunityCards.setAll(game.getCommunityCards());
-    obsPlayerCards.setAll(game.getPlayer().getCards());
-    switch (game.getCurrentRound().getRoundState().getCurrentState()) {
+    obsCommunityCards.setAll(service.getCommunityCards());
+    obsPlayerCards.setAll(service.getPlayer().getCards());
+
+    potValue.setValue(service.getPot().toString());
+    currentRank.setValue(service.getPlayerHandCheckResult().rank().toString());
+    currentCardValue.setValue(String.valueOf(service.getPlayerHandCheckResult().cardTotal()));
+    if (service.getLastWinnerResult() != null) {
+      currentWinner.setValue(service.getLastWinnerResult().participant().getName());
+      currentWinningHand.setValue("["+ service.getLastWinnerResult().rank().toString() + "], [" + service.getLastWinnerResult().cardTotal() + "]");
+    }
+    cardsOfHearts.setValue(service.getCardsOfHearts());
+    queenOfSpades.setValue(service.hasQueenOfSpades());
+
+    switch (service.getCurrentRoundState()) {
       case PRE_FLOP -> this.currentRound.setValue("Pre Flop");
       case FLOP     -> this.currentRound.setValue("Flop");
       case TURN     -> this.currentRound.setValue("Turn");
@@ -73,8 +109,13 @@ public class PokerController {
     }
   }
 
-  public void handleStartGame() throws InterruptedException {
-    game.startGame();
+  public void handleStartGame() {
+    service.startGame();
+    refreshUI();
+  }
+
+  public void handleAdvance() {
+    service.advanceRound();
     refreshUI();
   }
 
@@ -82,13 +123,26 @@ public class PokerController {
     refreshUI();
   }
 
-  public void handleCheck() {}
+  public void handleCheck() {
+    System.out.println("Check");
+  }
 
-  public void handleCall() {}
+  public void handleCall() {
+    System.out.println("Call");
+  }
 
-  public void handleRaise() {}
+  public void handleRaise() {
+    System.out.println("Raise");
+  }
 
-  public void handleAllIn() {}
+  public void handleFold() {
+    System.out.println("Fold");
+  }
 
-  public void stopGame() {}
+  public void handleAllIn() {
+    System.out.println("All In");
+  }
+
+  public void stopGame() {
+  }
 }

@@ -2,6 +2,7 @@ package edu.ntnu.idatt2003.emil.a5.view;
 
 import edu.ntnu.idatt2003.emil.a5.controller.PokerController;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
@@ -24,7 +25,7 @@ public class HeaderView extends StackPane {
     buttonRow.setAlignment(Pos.CENTER);
     buttonRow.setSpacing(10);
     buttonRow.getChildren().addAll(
-
+//      createStartButton()
     );
     return buttonRow;
   }

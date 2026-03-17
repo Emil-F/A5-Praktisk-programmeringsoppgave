@@ -42,6 +42,8 @@ public class CasinoView extends StackPane {
     potValue.textProperty().bind(controller.getPotValue());
 
     roundInfo.getChildren().addAll(
+//      potText,
+//      potValue
       roundText,
       currentRound
     );

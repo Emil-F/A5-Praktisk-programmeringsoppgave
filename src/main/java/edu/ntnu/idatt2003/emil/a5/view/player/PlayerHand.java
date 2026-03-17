@@ -1,7 +1,7 @@
 package edu.ntnu.idatt2003.emil.a5.view.player;
 
 import edu.ntnu.idatt2003.emil.a5.controller.PokerController;
-import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
+import edu.ntnu.idatt2003.emil.a5.model.poker.PlayingCard;
 import edu.ntnu.idatt2003.emil.a5.view.Card;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;

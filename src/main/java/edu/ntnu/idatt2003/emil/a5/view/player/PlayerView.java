@@ -9,19 +9,24 @@ import javafx.scene.layout.VBox;
 
 public class PlayerView extends StackPane {
   private final PokerController controller;
+  private final PlayerInfo playerInfo;
   private final PlayerHand playerHand;
 
   public PlayerView(PokerController controller) {
     this.controller = controller;
     this.playerHand = new PlayerHand(controller);
+    this.playerInfo = new PlayerInfo(controller);
     getStylesheets().add(getClass().getResource("/css/PlayerView.css").toExternalForm());
-    getChildren().add(createBody());
-
+    getChildren().addAll(
+      playerInfo,
+      createBody()
+    );
   }
 
   private VBox createBody() {
     VBox body = new VBox();
     body.getChildren().addAll(
+      playerInfo,
       playerHand,
       createButtonRow()
     );
@@ -36,24 +41,25 @@ public class PlayerView extends StackPane {
 
     buttonRow.getChildren().addAll(
       createStartButton(),
-      createCheckButton(),
-      createCallButton(),
-      createRaiseButton(),
-      createAllInButton()
+      createAdvanceButton()
     );
     return buttonRow;
   }
 
-  private Button createStartButton() {
+    private Button createStartButton() {
     Button startButton = new Button("Start Game");
     startButton.setOnAction(e -> {
-      try {
-        controller.handleStartGame();
-      } catch (InterruptedException ex) {
-        throw new RuntimeException(ex);
-      }
+      controller.handleStartGame();
     });
     return startButton;
+  }
+
+  private Button createAdvanceButton() {
+    Button advanceButton = new Button("Advance");
+    advanceButton.setOnAction(e -> {
+      controller.handleAdvance();
+    });
+    return advanceButton;
   }
 
   private Button createCheckButton() {
@@ -78,6 +84,14 @@ public class PlayerView extends StackPane {
       controller.handleRaise();
     });
     return raiseButton;
+  }
+
+  private Button createFoldButton() {
+    Button foldButton = new Button("Fold");
+    foldButton.setOnAction(e -> {
+      controller.handleFold();
+    });
+    return foldButton;
   }
 
   private Button createAllInButton() {

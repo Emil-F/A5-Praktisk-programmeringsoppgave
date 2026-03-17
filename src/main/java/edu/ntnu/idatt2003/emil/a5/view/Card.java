@@ -1,6 +1,6 @@
 package edu.ntnu.idatt2003.emil.a5.view;
 
-import edu.ntnu.idatt2003.emil.a5.model.PlayingCard;
+import edu.ntnu.idatt2003.emil.a5.model.poker.PlayingCard;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
