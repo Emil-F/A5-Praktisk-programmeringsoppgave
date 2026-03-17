@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2003.emil.a5.model;
+package edu.ntnu.idatt2003.emil.a5.model.poker.round;
 
 /**
  * @param amount used for raise
